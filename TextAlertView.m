@@ -7,14 +7,24 @@
 //
 
 #import "TextAlertView.h"
-#import "FastTextAppDelegate.h"
+
+@interface TextAlertView ()
+
+- (BOOL)hasNativeFields;
+
+@end
 
 @implementation TextAlertView
+
+- (BOOL)hasNativeFields
+{
+    return [[UIAlertView class] instancesRespondToSelector:@selector(alertViewStyle)];
+}
 
 //@synthesize textField;
 - (UITextField *)textField
 {
-    if ([FastTextAppDelegate getSystemVersionAsAnInteger] < __IPHONE_5_0)
+    if (![self hasNativeFields])
     {
         return textField;
     }
@@ -41,8 +51,7 @@
 	
 	if (self) 
 	{
-        NSLog(@"Current version: %i, iOS 5: %i", [FastTextAppDelegate getSystemVersionAsAnInteger], __IPHONE_5_0);
-        if ([FastTextAppDelegate getSystemVersionAsAnInteger] < __IPHONE_5_0)
+        if (![self hasNativeFields])
         {
             // Create and add UITextField to UIAlertView
             textField = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -111,7 +120,7 @@
  */
 - (void)layoutSubviews 
 {
-    if ([FastTextAppDelegate getSystemVersionAsAnInteger] < __IPHONE_5_0)
+    if (![self hasNativeFields])
     {
         [super layoutSubviews];
         CGRect frame = [self frame];
@@ -167,8 +176,13 @@
 {
 	[super didAddSubview:subview];
 	
-	if ([FastTextAppDelegate getSystemVersionAsAnInteger] >= __IPHONE_4_2 &&
-        [FastTextAppDelegate getSystemVersionAsAnInteger] < __IPHONE_5_0)
+    // Get the system version as a decimal.
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    NSNumber *systemVersion = [formatter numberFromString:[[[UIDevice currentDevice] systemVersion] substringToIndex:3]];
+    
+	if (systemVersion >= [NSNumber numberWithDouble:4.2] &&
+        ![self hasNativeFields])
 	{
 		if ([subview isMemberOfClass:[UIImageView class]])
 		{
