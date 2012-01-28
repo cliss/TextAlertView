@@ -1,0 +1,9 @@
+TextAlertView.*
+
+This class provides for a UIAlertView with a plain text input.  It handles this by either messing about with the view hierarchy (iOS < 5.0), or by using [UIAlertView setAlertViewStyle:] (iOS >= 5.0).
+
+This code was cribbed from somewhere, and then tweaked both to be more my style and to support iOS 5.0.  For the life of me, I don't know where I originally found it.
+
+Casey Liss
+casey@caseyliss.com
+28 January 2012
